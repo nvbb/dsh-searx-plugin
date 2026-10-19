@@ -9,6 +9,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "bin",
     "lib",
     "cordis.patch.yml",
     "install.ps1",
@@ -42,7 +43,8 @@
   },
   "scripts": {
     "test": "node --test test/provider.test.js test/seam.test.js test/command.test.js",
-    "test:local": "node --experimental-loader ./test/loader.mjs test/run-all.mjs"
+    "test:local": "node --experimental-loader ./test/loader.mjs test/run-all.mjs",
+    "cli": "node bin/cli.js"
   },
   "author": "nvbb",
   "repository": {
@@ -60,5 +62,9 @@
     "search",
     "web-search",
     "plugin"
-  ]
+  ],
+  "bin": {
+    "dsh-searx": "bin/cli.js",
+    "dsh-web-search-searxng": "bin/cli.js"
+  }
 }

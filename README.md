@@ -32,6 +32,28 @@ Agent → web_search → ctx.web → dsh-web-search-searxng → GET /search?form
 - **聊天内改配置**：`/searxng <url>` 通过 DSH 的 `ctx.configEditor` 写入
   profile patch，保留 YAML 注释，下一次搜索立即生效。
 
+## 文件结构
+
+```text
+dsh-searx-plugin/
+├── bin/cli.js            # npx 安装器：setup / status / check
+├── lib/
+│   ├── index.js          # Config schema + apply() + /searxng 命令
+│   ├── provider.js       # JSON 映射、分页、缓存、错误分类
+│   └── url.js            # 纯 URL 构造（provider 与 CLI 共用）
+├── test/
+│   ├── provider.test.js
+│   ├── seam.test.js
+│   ├── command.test.js
+│   ├── loader.mjs
+│   └── run-all.mjs
+├── cordis.patch.yml
+├── install.ps1
+├── package.json
+├── README.md
+└── LICENSE
+```
+
 ## 工作方式
 
 ```
@@ -69,6 +91,48 @@ curl 'http://127.0.0.1:8080/search?q=test&format=json'
 
 返回 `application/json`（而不是 403/HTML）即可。公网实例建议设置独立的
 `server.secret_key`、限流和 TLS；不要把无认证的实例直接暴露在公网。
+
+## npx 一键安装
+
+仓库推到 GitHub 后，可以直接用 npx 跑安装器，不需要先全局装包：
+
+```bash
+npx github:nvbb/dsh-searx-plugin setup --url https://search.example.com/searxng --profile web
+npx github:nvbb/dsh-searx-plugin status --profile web --check
+```
+
+`setup` 会：
+
+1. 请求 `/search?format=json`，确认实例真的可用；
+2. 执行 `dsh plugin --profile web add github:nvbb/dsh-searx-plugin`；
+3. 备份并修改 profile 的 `cordis.patch.yml`；
+4. 打印重启提示。
+
+常用选项：
+
+| 选项 | 作用 |
+|---|---|
+| `--url <url>` | SearXNG 地址（setup/check 必填） |
+| `--profile <name>` | DSH profile，默认 `web` |
+| `--language <code>` | 如 `zh-CN` |
+| `--engines <list>` | 如 `bing,duckduckgo` |
+| `--categories <list>` | 如 `general` |
+| `--no-check` | 跳过 HTTP JSON 检查 |
+| `--skip-install` | 只改配置，不跑 `dsh plugin add` |
+| `--profile-file <path>` | 覆盖 `cordis.patch.yml` 路径（测试用） |
+| `--dsh <path>` | 指定 dsh 可执行文件 |
+
+本地开发也可以直接：
+
+```bash
+node bin/cli.js setup --url https://search.example.com/searxng --skip-install --no-check
+node bin/cli.js status --check
+```
+
+> **npm 名称提示**：`dsh-web-search-searxng` 在 npm 上已被另一个项目占用
+> （0.5.1），所以本仓库默认用 `npx github:...`。如果要发布 npm，请先把
+> `package.json` 的 `name` 改成 `dsh-searx-plugin`（目前可用）或自己的
+> scoped name，并同步 `cordis.patch.yml` 里的 `name` 与 profile 依赖。
 
 ## 安装
 
