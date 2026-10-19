@@ -1,0 +1,8 @@
+# dsh-web-search-searxng: register the SearXNG search provider.
+# The provider id is "searxng"; pin it in the web service config:
+#   - id: web
+#     config:
+#       searchProvider: searxng
+- insert:
+    - id: web-search-searxng
+      name: 'dsh-web-search-searxng'
