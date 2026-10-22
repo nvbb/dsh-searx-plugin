@@ -306,7 +306,7 @@ npm run test:local
 - [dsh-searxng](https://github.com/rogerdigital/dsh-searxng)：功能更重的上游
   实现（Docker 部署、CLI、多实例 failover、doctor/tune）。
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)。
-- [nvbb/dsh-ollama-vision-bridge](https://github.com/nvbb/dsh-ollama-vision-bridge) — Local Ollama VL image descriptions for text-only DSH models (qwen3-vl:8b default, VRAM cooling, no API key).
+- [nvbb/dsh-searx-plugin](https://github.com/nvbb/dsh-searx-plugin) — Self-hosted SearXNG search provider for DSH: `web_search` without a paid API or a model turn per search.
 ## License
 
 MIT
